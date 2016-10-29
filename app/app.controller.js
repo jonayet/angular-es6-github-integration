@@ -7,17 +7,42 @@ import './component/github-user.component';
 import './component/error-viewer.component';
 
 class AppController {
-    constructor($state, $scope, githubService){
+    constructor($scope, $state, $q, githubService){
         Object.assign(this, {
+            $scope,
             $state,
+            $q,
             githubService
         });
 
         this.userId = '';
-        this.isUserIdValid = false;
-        this.isLoading = false;
         this.currentPage = 1;
-        this.gridOptions = {
+        this.isUserChecked = false;
+        this.loadingRepositories = false;
+        this.isUserIdValid = false;
+        this.hasRepository = false;
+
+        this.gridOptions = this.createGridOptions();
+        this.gridOptions.onRegisterApi = (gridApi) => {
+            this.registerGridApi(gridApi);
+        };
+
+        this.onValidUserId = (userId) => {
+            this.isUserIdValid = true;
+            this.$state.go('.', {userId: userId}, {notify: false});
+            this.showRepositories(userId);
+        };
+    }
+
+    $onInit(){
+        this.userId = this.$state.params['userId'];
+        this.checkUserId(this.userId).then(() => {
+             this.showRepositories(this.userId);
+        });
+    }
+
+    createGridOptions(){
+        return {
             enableFullRowSelection: true,
             enableRowSelection: true,
             multiSelect: false,
@@ -31,57 +56,61 @@ class AppController {
                 { field: 'forks_count', displayName: 'Forks' },
                 { field: 'url', displayName: 'Url' }
             ]
-        };
-
-        this.gridOptions.onRegisterApi = (gridApi) => {
-            gridApi.selection.on.rowSelectionChanged($scope, (row) => {
-                console.log(row.entity)
-            });
-
-            gridApi.infiniteScroll.on.needLoadMoreData($scope, () => {
-                gridApi.infiniteScroll.saveScrollPercentage();
-                this.githubService.getRepositories(this.userId, this.currentPage + 1).then((response) => {
-                    if(response.data.length > 0) {
-                        const currentData =  this.gridOptions.data;
-                        this.generateGridData(currentData.concat(response.data));
-                        this.currentPage++;
-                    }
-                    gridApi.infiniteScroll.dataLoaded(false, response.data.length !== 0);
-                });
-            });
-        };
-
-        this.onValidUserId = (userId) => {
-            this.isUserIdValid = true;
-            this.$state.go('.', {userId: userId}, {notify: false});
-            this.showRepositories(userId);
-        };
-    }
-
-    $onInit(){
-        this.userId = this.$state.params['userId'];
-
-        if(this.userId) {
-            this.isLoading = true;
-            this.githubService.isUserExist(this.userId).then(() => {
-                this.isUserIdValid = true;
-                this.showRepositories(this.userId);
-            }, () => {
-                this.error = `'${this.userId}' doesn't exist.`;
-            }).finally(() => {
-                this.isLoading = false;
-            });
         }
     }
 
-    showRepositories(userId){
-        this.githubService.getRepositories(userId).then((response) => {
-            this.generateGridData(response.data);
+    registerGridApi(gridApi){
+        gridApi.selection.on.rowSelectionChanged(this.$scope, (row) => {
+            console.log(row.entity)
+        });
+
+        gridApi.infiniteScroll.on.needLoadMoreData(this.$scope, () => {
+            this.infiniteScrollLoadMore(gridApi);
         });
     }
 
-    generateGridData(repositoryList){
-        this.gridOptions.data = repositoryList.map(repository => {
+    checkUserId(userId){
+        this.isUserChecked = false;
+        this.isUserIdValid = false;
+        return this.githubService.isUserExist(userId).then(() => {
+            this.isUserIdValid = true;
+        }, (error) => {
+            this.error = error;
+            return this.$q.reject(error);
+        }).finally(() => {
+            this.isUserChecked = true;
+        });
+    }
+
+    showRepositories(userId){
+        this.loadingRepositories = true;
+        this.githubService.getRepositories(userId).then((repositories) => {
+            this.loadingRepositories = false;
+            this.currentPage = 1;
+            this.generateGridData(repositories);
+        });
+    }
+
+    infiniteScrollLoadMore(gridApi){
+        gridApi.infiniteScroll.saveScrollPercentage();
+        this.githubService.getRepositories(this.userId, this.currentPage + 1).then((repositories) => {
+            const hasNewData = repositories.length !== 0;
+            if(hasNewData) {
+                const currentData =  this.gridOptions.data;
+                this.generateGridData(currentData.concat(repositories));
+                this.currentPage++;
+            }
+            gridApi.infiniteScroll.dataLoaded(false, hasNewData);
+        });
+    }
+
+    generateGridData(repositories){
+        if(!repositories.length) {
+            this.hasRepository = false;
+            return;
+        }
+        this.hasRepository = true;
+        this.gridOptions.data = repositories.map(repository => {
             const {name, stargazers_count, forks_count, url} = repository;
             return {
                 name,
@@ -93,10 +122,18 @@ class AppController {
     }
 
     shouldPromptUser(){
-        return !this.isLoading && !this.isUserIdValid;
+        return this.isUserChecked && !this.isUserIdValid;
+    }
+
+    shouldShowRepositories(){
+        return this.isUserChecked && this.isUserIdValid && this.hasRepository;
+    }
+
+    shouldShowEmpty(){
+        return this.isUserChecked && this.isUserIdValid && !this.loadingRepositories && !this.hasRepository;
     }
 }
-AppController.$inject = ['$state', '$scope', githubService];
+AppController.$inject = ['$scope', '$state', '$q', githubService];
 
 export const appController = 'appController';
 appModule.controller(appController, AppController);

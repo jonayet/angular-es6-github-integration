@@ -1,6 +1,12 @@
-<div class="container">
-    <div ng-if="vm.isLoading">Please wait...</div>
+<div class="container app">
+    <h2 class="app-title ">GitHub Integration</h2>
+    <hr>
+    <div ng-if="!vm.isUserChecked" class="wait">Please wait...</div>
     <github-user ng-if="vm.shouldPromptUser()" user-id="vm.userId" on-valid-user-id="vm.onValidUserId"></github-user>
-    <div ng-if="vm.isUserIdValid" ui-grid="vm.gridOptions" ui-grid-selection ui-grid-infinite-scroll></div>
+    <div ng-if="vm.shouldShowRepositories()">
+        <h3>Repository list</h3>
+        <div ui-grid="vm.gridOptions" ui-grid-selection ui-grid-infinite-scroll></div>
+    </div>
+    <div ng-if="vm.shouldShowEmpty()" class="no-repository">No Repositories.</div>
     <error-viewer error="vm.error" duration="3000"></error-viewer>
 </div>

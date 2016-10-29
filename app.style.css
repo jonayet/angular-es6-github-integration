@@ -1,4 +1,29 @@
-.repositories {
-    width: 500px;
-    height: 250px;
+.app {
+
+}
+
+.app-title {
+    text-align: center;
+}
+
+.wait {
+    text-align: center;
+    font-size: x-large;
+}
+
+.no-repository {
+    text-align: center;
+    font-size: x-large;
+}
+
+.show-button {
+    margin-top: 24px;
+}
+
+.error {
+    margin: 20px;
+    padding: 10px;
+    color: white;
+    background-color: crimson;
+    border-radius: 5px;
 }

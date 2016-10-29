@@ -2,8 +2,8 @@
  * Created by jonayet on 10/29/16.
  */
 import {appModule} from './../app.module';
+import {accessToken} from './../../access-token';
 
-const accessToken = 'f84fabf31f81e14c445483696c86d068b43e7c9f';
 class GithubService {
     constructor($http) {
         this.$http = $http;

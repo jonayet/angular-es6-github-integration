@@ -42,8 +42,6 @@ class AppController {
     }
 
     home(){
-        this.$state.go('.', {userId: ''}, {notify: false});
-        this.userId = '';
         this.isUserIdValid = false;
         this.gridOptions.data = [];
     }
@@ -58,9 +56,9 @@ class AppController {
             infiniteScrollUp: false,
             infiniteScrollDown: true,
             columnDefs: [
-                { field: 'name', displayName: 'Name', width: 100 },
-                { field: 'stargazers_count', displayName: 'Stars' },
-                { field: 'forks_count', displayName: 'Forks' },
+                { field: 'name', displayName: 'Name' },
+                { field: 'stargazers_count', displayName: 'Stars', width: 100 },
+                { field: 'forks_count', displayName: 'Forks', width: 100 },
                 { field: 'url', displayName: 'Url' }
             ]
         }

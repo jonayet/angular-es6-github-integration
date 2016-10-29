@@ -8,6 +8,11 @@
         <h3>Repository list</h3>
         <div ui-grid="vm.gridOptions" ui-grid-selection ui-grid-infinite-scroll></div>
     </div>
-    <div ng-if="vm.shouldShowEmpty()" class="no-repository">No Repositories.</div>
+    <div ng-if="vm.shouldShowEmpty()" class="no-repository">
+        <div>
+            No Repositories.
+        </div>
+        <button ng-click="vm.home()" class="btn btn-default show-button">Back</button>
+    </div>
     <error-viewer error="vm.error" duration="3000"></error-viewer>
 </div>

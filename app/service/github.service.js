@@ -10,20 +10,22 @@ export class GithubService {
             $http,
             $q
         });
+        this.requestAbroatTimeout = 20000;
+        this.userId = '';
     }
 
     isUserExist(userId){
+        this.userId = userId;
         if(!userId) return this.$q.reject('user-id is empty.');
-        return this.$http.get(this.addToken(`https://api.github.com/users/${userId}`)).catch(() => {
-            return this.$q.reject(`'${userId}' doesn't exist.`);
-        });
+        return this.httpGet(this.addToken(`https://api.github.com/users/${this.userId}`));
     }
 
     getRepositories(userId, pageNo = 1, itemPerPage = 10) {
+        this.userId = userId;
         let url = this.addToken(`https://api.github.com/users/${userId}/repos`);
         url = this.addParam(url, 'page', pageNo);
         url = this.addParam(url, 'per_page', itemPerPage);
-        return this.$http.get(url).then(response => response.data);
+        return this.httpGet(url).then(response => response.data);
     }
 
     addToken(url) {
@@ -35,6 +37,17 @@ export class GithubService {
         if(!value) return;
         var joiner = url.indexOf('?') === -1 ? '?' : '&';
         return url + joiner + key + '=' + value;
+    }
+
+    httpGet(url) {
+        return this.$http({
+            method: 'GET',
+            url: url,
+            timeout: this.requestAbroatTimeout
+        }).catch((error) => {
+            const errorMessage = error.status == 404 ? `'${this.userId}' doesn't exist.` : 'Unknown error occurred.';
+            return this.$q.reject(errorMessage);
+        });
     }
 }
 GithubService.$inject = ['$http', '$q'];

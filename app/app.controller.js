@@ -41,6 +41,13 @@ class AppController {
         });
     }
 
+    home(){
+        this.$state.go('.', {userId: ''}, {notify: false});
+        this.userId = '';
+        this.isUserIdValid = false;
+        this.gridOptions.data = [];
+    }
+
     createGridOptions(){
         return {
             enableFullRowSelection: true,
@@ -61,7 +68,7 @@ class AppController {
 
     registerGridApi(gridApi){
         gridApi.selection.on.rowSelectionChanged(this.$scope, (row) => {
-            console.log(row.entity)
+            //console.log(row.entity)
         });
 
         gridApi.infiniteScroll.on.needLoadMoreData(this.$scope, () => {
@@ -74,9 +81,6 @@ class AppController {
         this.isUserIdValid = false;
         return this.githubService.isUserExist(userId).then(() => {
             this.isUserIdValid = true;
-        }, (error) => {
-            this.error = error;
-            return this.$q.reject(error);
         }).finally(() => {
             this.isUserChecked = true;
         });
@@ -88,12 +92,14 @@ class AppController {
             this.loadingRepositories = false;
             this.currentPage = 1;
             this.generateGridData(repositories);
+        }, (error) => {
+            this.error = error;
         });
     }
 
     infiniteScrollLoadMore(gridApi){
         gridApi.infiniteScroll.saveScrollPercentage();
-        this.githubService.getRepositories(this.userId, this.currentPage + 1).then((repositories) => {
+        this.githubService.getRepositories(this.userId, this.currentPage + 1, 10).then((repositories) => {
             const hasNewData = repositories.length !== 0;
             if(hasNewData) {
                 const currentData =  this.gridOptions.data;
@@ -101,6 +107,9 @@ class AppController {
                 this.currentPage++;
             }
             gridApi.infiniteScroll.dataLoaded(false, hasNewData);
+        }, (error) => {
+            this.error = error;
+            gridApi.infiniteScroll.dataLoaded(false, true);
         });
     }
 

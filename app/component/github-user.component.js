@@ -11,8 +11,8 @@ function factory() {
         this.checkUserId = () => {
             return githubService.isUserExist(this.userId).then(() => {
                 this.onValidUserId(this.userId);
-            }, () => {
-                this.error = `'${this.userId}' doesn't exist.`;
+            }, (error) => {
+                this.error = error;
             });
         };
     }

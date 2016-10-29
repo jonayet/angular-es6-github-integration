@@ -31,6 +31,7 @@ export class GithubService {
     }
 
     createPagination(linkHeader){
+        if(!linkHeader) return {};
         return linkHeader.split(/,\s?/).reduce((pagination, link) => {
             const trimmedLink = link.replace(/[<>'"]/g, '');
             const linkParts = trimmedLink.split(/;\s?rel=/);

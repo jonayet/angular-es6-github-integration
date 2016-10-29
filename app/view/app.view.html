@@ -1,6 +1,6 @@
 <div class="container">
     <div ng-if="vm.isLoading">Please wait...</div>
     <github-user ng-if="vm.shouldPromptUser()" user-id="vm.userId" on-valid-user-id="vm.onValidUserId"></github-user>
-    <div ng-if="vm.isUserIdValid" ui-grid="vm.gridOptions" ui-grid-selection class="repositories"></div>
+    <div ng-if="vm.isUserIdValid" ui-grid="vm.gridOptions" ui-grid-selection ui-grid-infinite-scroll></div>
     <error-viewer error="vm.error" duration="3000"></error-viewer>
 </div>

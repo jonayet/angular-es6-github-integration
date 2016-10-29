@@ -16,11 +16,15 @@ class AppController {
         this.userId = '';
         this.isUserIdValid = false;
         this.isLoading = false;
+        this.currentPage = 1;
         this.gridOptions = {
             enableFullRowSelection: true,
             enableRowSelection: true,
             multiSelect: false,
             enableRowHeaderSelection: false,
+            infiniteScrollRowsFromEnd: 5,
+            infiniteScrollUp: false,
+            infiniteScrollDown: true,
             columnDefs: [
                 { field: 'name', displayName: 'Name', width: 100 },
                 { field: 'stargazers_count', displayName: 'Stars' },
@@ -30,8 +34,20 @@ class AppController {
         };
 
         this.gridOptions.onRegisterApi = (gridApi) => {
-            gridApi.selection.on.rowSelectionChanged($scope, function (row) {
+            gridApi.selection.on.rowSelectionChanged($scope, (row) => {
                 console.log(row.entity)
+            });
+
+            gridApi.infiniteScroll.on.needLoadMoreData($scope, () => {
+                gridApi.infiniteScroll.saveScrollPercentage();
+                this.githubService.getRepositories(this.userId, this.currentPage + 1).then((response) => {
+                    if(response.data.length > 0) {
+                        const currentData =  this.gridOptions.data;
+                        this.generateGridData(currentData.concat(response.data));
+                        this.currentPage++;
+                    }
+                    gridApi.infiniteScroll.dataLoaded(false, response.data.length !== 0);
+                });
             });
         };
 
@@ -59,7 +75,7 @@ class AppController {
     }
 
     showRepositories(userId){
-        this.githubService.getRepositories(userId, 1, 10).then((response) => {
+        this.githubService.getRepositories(userId).then((response) => {
             this.generateGridData(response.data);
         });
     }

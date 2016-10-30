@@ -334,6 +334,7 @@
 	        });
 	        this.requestAbroatTimeout = 20000;
 	        this.userId = '';
+	        this.accessToken = _accessToken.accessToken;
 	    }
 	
 	    _createClass(GithubService, [{
@@ -360,8 +361,8 @@
 	    }, {
 	        key: 'addToken',
 	        value: function addToken(url) {
-	            if (!_accessToken.accessToken) return url;
-	            return this.addParam(url, 'access_token', _accessToken.accessToken);
+	            if (!this.accessToken) return url;
+	            return this.addParam(url, 'access_token', this.accessToken);
 	        }
 	    }, {
 	        key: 'addParam',
@@ -407,7 +408,7 @@
 	 * Created by jonayet on 10/29/16.
 	 */
 	
-	var accessToken = exports.accessToken = '';
+	var accessToken = exports.accessToken = '8aac9a63212eb9b675be6e8cb541a1833a2febb6';
 
 /***/ },
 /* 6 */
@@ -519,19 +520,19 @@
 /* 8 */
 /***/ function(module, exports) {
 
-	module.exports = "<div ng-if=\"vm.show\">\r\n    <div class=\"error\">{{vm.error}}</div>\r\n</div>";
+	module.exports = "<div ng-if=\"vm.show\">\n    <div class=\"error\">{{vm.error}}</div>\n</div>";
 
 /***/ },
 /* 9 */
 /***/ function(module, exports) {
 
-	module.exports = "<div>\r\n    <form ng-submit=\"vm.checkUserId()\">\r\n        <div class=\"row\">\r\n            <div class=\"col-md-offset-4 col-sm-offset-3 col-xs-offset-2\">\r\n                <div class=\"col-md-4 col-sm-6 col-xs-8\">\r\n                    <label>Enter a GitHub user name:</label>\r\n                    <input ng-model=\"vm.userId\" type=\"text\" required class=\"form-control\">\r\n                </div>\r\n                <div class=\"col-md-2 col-sm-2 col-xs-2\">\r\n                    <button type=\"submit\" class=\"btn btn-default show-button\">Show</button>\r\n                </div>\r\n            </div>\r\n        </div>\r\n    </form>\r\n    <error-viewer error=\"vm.error\" duration=\"3000\"></error-viewer>\r\n</div>";
+	module.exports = "<div>\n    <form ng-submit=\"vm.checkUserId()\">\n        <div class=\"row\">\n            <div class=\"col-md-offset-4 col-sm-offset-3 col-xs-offset-2\">\n                <div class=\"col-md-4 col-sm-6 col-xs-8\">\n                    <label>Enter a GitHub user name:</label>\n                    <input ng-model=\"vm.userId\" type=\"text\" required class=\"form-control\">\n                </div>\n                <div class=\"col-md-2 col-sm-2 col-xs-2\">\n                    <button type=\"submit\" class=\"btn btn-default show-button\">Show</button>\n                </div>\n            </div>\n        </div>\n    </form>\n    <error-viewer error=\"vm.error\" duration=\"3000\"></error-viewer>\n</div>";
 
 /***/ },
 /* 10 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"container app\">\r\n    <h2 class=\"app-title \">GitHub Integration</h2>\r\n    <hr>\r\n    <div ng-if=\"!vm.isUserChecked\" class=\"wait\">Please wait...</div>\r\n    <github-user ng-if=\"vm.shouldPromptUser()\" user-id=\"vm.userId\" on-valid-user-id=\"vm.onValidUserId\"></github-user>\r\n    <div ng-if=\"vm.shouldShowRepositories()\">\r\n        <button ng-click=\"vm.home()\" class=\"btn btn-default show-button\">Back</button>\r\n        <h3>Repository list</h3>\r\n        <div ui-grid=\"vm.gridOptions\" ui-grid-selection ui-grid-infinite-scroll></div>\r\n    </div>\r\n    <div ng-if=\"vm.shouldShowEmpty()\" class=\"no-repository\">\r\n        <div>\r\n            No Repositories.\r\n        </div>\r\n        <button ng-click=\"vm.home()\" class=\"btn btn-default show-button\">Back</button>\r\n    </div>\r\n    <error-viewer error=\"vm.error\" duration=\"3000\"></error-viewer>\r\n</div>";
+	module.exports = "<div class=\"container app\">\n    <h2 class=\"app-title \">GitHub Integration</h2>\n    <hr>\n    <div ng-if=\"!vm.isUserChecked\" class=\"wait\">Please wait...</div>\n    <github-user ng-if=\"vm.shouldPromptUser()\" user-id=\"vm.userId\" on-valid-user-id=\"vm.onValidUserId\"></github-user>\n    <div ng-if=\"vm.shouldShowRepositories()\">\n        <button ng-click=\"vm.home()\" class=\"btn btn-default show-button\">Back</button>\n        <h3>Repository list</h3>\n        <div ui-grid=\"vm.gridOptions\" ui-grid-selection ui-grid-infinite-scroll></div>\n    </div>\n    <div ng-if=\"vm.shouldShowEmpty()\" class=\"no-repository\">\n        <div>\n            No Repositories.\n        </div>\n        <button ng-click=\"vm.home()\" class=\"btn btn-default show-button\">Back</button>\n    </div>\n    <error-viewer error=\"vm.error\" duration=\"3000\"></error-viewer>\n    <div class=\"github-link\" >\n        <label>GitHub: </label>\n        <a href=\"https://github.com/jonayet/angular-es6-github-integration\">https://github.com/jonayet/angular-es6-github-integration</a>\n    </div>\n</div>";
 
 /***/ },
 /* 11 */
@@ -568,7 +569,7 @@
 	
 	
 	// module
-	exports.push([module.id, ".app {\r\n\r\n}\r\n\r\n.app-title {\r\n    text-align: center;\r\n}\r\n\r\n.wait {\r\n    text-align: center;\r\n    font-size: x-large;\r\n}\r\n\r\n.no-repository {\r\n    text-align: center;\r\n    font-size: x-large;\r\n}\r\n\r\n.show-button {\r\n    margin-top: 24px;\r\n}\r\n\r\n.error {\r\n    margin: 20px;\r\n    padding: 10px;\r\n    color: white;\r\n    background-color: crimson;\r\n    border-radius: 5px;\r\n}", ""]);
+	exports.push([module.id, ".app {\n\n}\n\n.app-title {\n    text-align: center;\n}\n\n.wait {\n    text-align: center;\n    font-size: x-large;\n}\n\n.no-repository {\n    text-align: center;\n    font-size: x-large;\n}\n\n.show-button {\n    margin-top: 24px;\n}\n\n.error {\n    margin: 20px;\n    padding: 10px;\n    color: white;\n    background-color: crimson;\n    border-radius: 5px;\n}\n\n.github-link {\n    position: fixed;\n    bottom: 20px;\n}", ""]);
 	
 	// exports
 

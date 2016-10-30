@@ -6,11 +6,11 @@ module.exports = function(config) {
     config.set({
         basePath: '',
         files: [
-            'vendors.js',
+            'test-vendors.js',
             'app/**/*-test.js'
         ],
         preprocessors: {
-            'vendors.js': ['webpack', 'sourcemap'],
+            'test-vendors.js': ['webpack', 'sourcemap'],
             'app/*/*-test.js': ['webpack', 'sourcemap']
         },
         exclude: [ ],
@@ -23,7 +23,7 @@ module.exports = function(config) {
         },
         webpackMiddleware: {
             noInfo: true,
-            stats: 'errors-only',
+            stats: 'errors-only'
         },
         reporters: ['progress'],
         colors: true,

@@ -12,6 +12,7 @@ export class GithubService {
         });
         this.requestAbroatTimeout = 20000;
         this.userId = '';
+        this.accessToken = accessToken;
     }
 
     isUserExist(userId){
@@ -29,8 +30,8 @@ export class GithubService {
     }
 
     addToken(url) {
-        if (!accessToken) return url;
-        return this.addParam(url, 'access_token', accessToken);
+        if (!this.accessToken) return url;
+        return this.addParam(url, 'access_token', this.accessToken);
     }
 
     addParam(url, key, value) {

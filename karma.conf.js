@@ -6,11 +6,11 @@ module.exports = function(config) {
     config.set({
         basePath: '',
         files: [
-            'test-vendors.js',
+            'vendors.js',
             'app/**/*-test.js'
         ],
         preprocessors: {
-            'test-vendors.js': ['webpack', 'sourcemap'],
+            'vendors.js': ['webpack', 'sourcemap'],
             'app/*/*-test.js': ['webpack', 'sourcemap']
         },
         exclude: [ ],

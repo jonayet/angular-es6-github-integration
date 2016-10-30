@@ -6,12 +6,13 @@
 
 module.exports = {
     entry: {
-        javascript: "./app/app.main.js",
-        html: "./index.html"
+        app: "./app/app.main.js",
+        vendors: "./vendors.js"
     },
     output: {
         path: 'build',
-        filename: 'app.bundle.js'
+        publicPath: "build",
+        filename: '[name].bundle.js'
     },
     module: {
         loaders: [
@@ -21,14 +22,14 @@ module.exports = {
                 loader: 'babel-loader?presets[]=es2015'
             },
             {
-                test: /index\.html$/,
-                exclude: /node_modules/,
-                loader: 'file?name=[name].[ext]'
-            },
-            {
                 test: /\.view\.html$/,
                 exclude: /node_modules/,
                 loader: 'html-loader'
+            },
+            {
+                test: /\.css$/,
+                exclude: /node_modules/,
+                loader: 'style-loader!css-loader'
             }
         ]
     },

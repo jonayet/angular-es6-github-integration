@@ -27,3 +27,8 @@
     background-color: crimson;
     border-radius: 5px;
 }
+
+.github-link {
+    position: fixed;
+    bottom: 20px;
+}

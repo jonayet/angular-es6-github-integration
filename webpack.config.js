@@ -1,6 +1,7 @@
 /**
  * Created by jonayet on 10/28/16.
  */
+var webpack = require("webpack");
 
 'use strict';
 
@@ -33,5 +34,13 @@ module.exports = {
             }
         ]
     },
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true,
+            compress: {
+                warnings: false
+            }
+        })
+    ],
     devtool: "source-map"
 };
